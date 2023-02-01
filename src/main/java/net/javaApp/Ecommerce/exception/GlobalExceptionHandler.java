@@ -18,4 +18,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 webRequest.getDescription(false) ) ;
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(EcommAPIException.class)
+    public ResponseEntity<ErrorDetails> handleEcommAPIException(EcommAPIException ex, WebRequest webRequest){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
+                webRequest.getDescription(false) ) ;
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
 }

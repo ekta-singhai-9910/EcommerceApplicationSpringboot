@@ -3,6 +3,8 @@ package net.javaApp.Ecommerce.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Entity
 @Table
@@ -12,4 +14,6 @@ public class Role {
     private Long id;
 
     private String name ;
+
+
 }
