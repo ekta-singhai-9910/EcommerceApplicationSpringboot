@@ -7,5 +7,7 @@ public interface AuthService {
 
     String login(LoginDto loginDto) ;
 
-    String register(RegisterDto registerDto) ;
+    String registerBuyer(RegisterDto registerDto) ;
+
+    String registerSeller(RegisterDto registerDto) ;
 }
