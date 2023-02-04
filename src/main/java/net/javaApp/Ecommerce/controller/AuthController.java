@@ -1,5 +1,6 @@
 package net.javaApp.Ecommerce.controller;
 
+import net.javaApp.Ecommerce.payload.JwtAuthResponseDTO;
 import net.javaApp.Ecommerce.payload.LoginDto;
 import net.javaApp.Ecommerce.payload.RegisterDto;
 import net.javaApp.Ecommerce.service.AuthService;
@@ -20,7 +21,10 @@ public class AuthController {
 
     @PostMapping(value = {"/login", "/signin"})
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
-       return new ResponseEntity<>(authService.login(loginDto), HttpStatus.OK) ;
+        String token = authService.login(loginDto) ;
+        JwtAuthResponseDTO responseDTO = new JwtAuthResponseDTO() ;
+        responseDTO.setAccessToken(token);
+       return new ResponseEntity<>(responseDTO, HttpStatus.OK) ;
     }
 
     @PostMapping(value = {"/register/buyer", "/signup/buyer"})
