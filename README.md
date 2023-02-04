@@ -1,3 +1,3 @@
 # EcommerceApplicationSpringboot
 
-This has login & Register API with Spring Security & JWT implementation.
+This has Login & Register API for ecommerce application with Spring Security & JWT implementation.
