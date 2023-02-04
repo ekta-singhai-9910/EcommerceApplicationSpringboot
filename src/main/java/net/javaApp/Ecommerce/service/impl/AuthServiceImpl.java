@@ -7,6 +7,7 @@ import net.javaApp.Ecommerce.payload.LoginDto;
 import net.javaApp.Ecommerce.payload.RegisterDto;
 import net.javaApp.Ecommerce.repository.RoleRepository;
 import net.javaApp.Ecommerce.repository.UserRepository;
+import net.javaApp.Ecommerce.security.JwtTokenProvider;
 import net.javaApp.Ecommerce.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,13 +26,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private AuthenticationManager authenticationManager ;
+
     @Autowired
     private UserRepository userRepository ;
+
     @Autowired
     private RoleRepository roleRepository ;
+
     @Autowired
     private PasswordEncoder passwordEncoder ;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider ;
 
     @Override
     public String login(LoginDto loginDto) {
@@ -40,7 +46,9 @@ public class AuthServiceImpl implements AuthService {
         )) ;
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User logged in successfully";
+
+        String token = jwtTokenProvider.generateToken(authentication) ;
+        return token;
     }
 
     @Override
