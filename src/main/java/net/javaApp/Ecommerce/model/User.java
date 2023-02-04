@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -33,4 +34,6 @@ public class User {
     )
     Set<Role>roles ;
 
+    @OneToMany( mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Product> products ;
 }
