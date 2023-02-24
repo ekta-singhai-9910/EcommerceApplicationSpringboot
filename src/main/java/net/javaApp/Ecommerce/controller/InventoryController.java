@@ -12,7 +12,12 @@ public class InventoryController {
     private InventoryService inventoryService ;
 
     @GetMapping
-    public ResponseEntity<?> getProductsByCategory(){
+    public ResponseEntity<?> getAllProducts(){
         return ResponseEntity.ok(inventoryService.getAllProducts()) ;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductsByCategory(@PathVariable(name = "categoryId") long categoryId){
+        return ResponseEntity.ok(inventoryService.getProductsByCategory(categoryId)) ;
     }
 }

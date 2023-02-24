@@ -36,4 +36,7 @@ public class User {
 
     @OneToMany( mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Product> products ;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private RefreshToken token ;
 }
