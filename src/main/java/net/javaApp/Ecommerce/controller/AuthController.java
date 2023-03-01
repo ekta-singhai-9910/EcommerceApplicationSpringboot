@@ -63,4 +63,20 @@ public class AuthController {
     public ResponseEntity<?> registerSeller(@RequestBody RegisterDto registerDto){
         return new ResponseEntity<>(authService.registerSeller(registerDto), HttpStatus.OK) ;
     }
+
+
+    @PostMapping("refreshToken")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequestDto request){
+        String requestRefreshToken = request.getRefreshToken();
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user-> {
+                    String token = jwtTokenProvider.generateTokenFromUsername(user.getUsername());
+                    return ResponseEntity.ok(new RefreshTokenResponseDto(token, requestRefreshToken));
+                }).orElseThrow(()->new TokenRefreshException(requestRefreshToken,
+                        "Refresh token not found in the dataabse")) ;
+    }
+
+
 }
