@@ -40,6 +40,11 @@ public class JwtTokenProvider {
 
     }
 
+    public String generateTokenFromUsername(String username) {
+        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationDate)).signWith(key())
+                .compact();
+    }
     private  Key key(){
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecretKey)
