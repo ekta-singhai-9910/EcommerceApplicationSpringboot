@@ -31,11 +31,7 @@ public class Product {
     @JoinColumn(name = "seller_id")
     private User seller ;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "cart",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id")
-    )
-    private Set<Product> cart;
+
+    private Long quantity ;
 
 }
