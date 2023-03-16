@@ -3,6 +3,7 @@ package net.javaApp.Ecommerce.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import net.javaApp.Ecommerce.exception.EcommAPIException;
 import net.javaApp.Ecommerce.exception.TokenRefreshException;
 import net.javaApp.Ecommerce.model.RefreshToken;
 import net.javaApp.Ecommerce.model.User;
@@ -67,12 +68,22 @@ public class AuthController {
 
     @PostMapping(value = {"/register/buyer", "/signup/buyer"})
     public ResponseEntity<?> registerBuyer(@RequestBody RegisterDto registerDto){
-        return new ResponseEntity<>(authService.registerBuyer(registerDto), HttpStatus.OK) ;
+        try{
+            authService.registerBuyer(registerDto) ;
+        }catch (Exception ex){
+            throw new EcommAPIException(HttpStatus.BAD_REQUEST, "User cannot be registered") ;
+        }
+        return new ResponseEntity<>( new RegisterResponseDto("New User registered successfully"), HttpStatus.OK) ;
     }
 
     @PostMapping(value = {"/register/seller", "/signup/seller"})
     public ResponseEntity<?> registerSeller(@RequestBody RegisterDto registerDto){
-        return new ResponseEntity<>(authService.registerSeller(registerDto), HttpStatus.OK) ;
+        try{
+            authService.registerBuyer(registerDto) ;
+        }catch (Exception ex){
+            throw new EcommAPIException(HttpStatus.BAD_REQUEST, "Seller cannot be registered") ;
+        }
+        return new ResponseEntity<>(new RegisterResponseDto("New Seller registered successfully"), HttpStatus.OK) ;
     }
 
 
@@ -89,13 +100,16 @@ public class AuthController {
                         "Refresh token not found in the dataabse")) ;
     }
 
-    @PostMapping({"/logout", "/signot"})
+    @PostMapping({"/logout", "/signout"})
    public ResponseEntity<?>logoutUser(HttpServletRequest request, HttpServletResponse response){
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()) ;
         Optional<User> user = userRepository.findByUsernameOrEmail(userDetails.getUsername(), userDetails.getUsername()) ;
         Long userId = user.get().getId();
         refreshTokenRepository.deleteByUserObj(user.get());
-        return ResponseEntity.ok("Log out successful!");
+        return ResponseEntity.ok(new LogOutResponseDto("Logout successful"));
    }
+
+
+
 }

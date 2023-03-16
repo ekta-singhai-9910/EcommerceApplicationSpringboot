@@ -2,6 +2,8 @@ package net.javaApp.Ecommerce.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.javaApp.Ecommerce.model.Category;
+import net.javaApp.Ecommerce.payload.CategoryDTO;
+import net.javaApp.Ecommerce.payload.CategoryResponseDto;
 import net.javaApp.Ecommerce.payload.ProductDto;
 import net.javaApp.Ecommerce.payload.ProductUpdateDto;
 import net.javaApp.Ecommerce.service.InventoryService;
@@ -23,17 +25,18 @@ public class InventoryController {
     }
 
 
-    @PostMapping("/addProduct")
+    @PostMapping("/Product")
     public ResponseEntity<?> addProductToInventory(@RequestBody ProductDto productDto) {
         ProductDto addedProduct = inventoryService.addProduct(productDto) ;
         return new ResponseEntity<>(addedProduct, HttpStatus.CREATED) ;
     }
 
-    @PostMapping("/addCategory")
-    public ResponseEntity<?> addCategory(@RequestParam(name = "category") String category){
-        Category addedCategory = inventoryService.addCategory(category) ;
+    @PostMapping("/Category")
+    public ResponseEntity<?> addCategory( CategoryDTO category){
+        Category addedCategory = inventoryService.addCategory(category.getCategory()) ;
         log.info("Added Category : {}", addedCategory.getName());
-        return new ResponseEntity<>("Added Category", HttpStatus.CREATED) ;
+
+        return new ResponseEntity<>(new CategoryResponseDto("Added Category Successfully"), HttpStatus.CREATED) ;
 
     }
 
@@ -43,8 +46,6 @@ public class InventoryController {
     }
 
 
-//    public ResponseEntity<?> updateProduct(@RequestBody ProductUpdateDto productUpdateDto){
-//        return null ;
-//    }
+
 
 }
