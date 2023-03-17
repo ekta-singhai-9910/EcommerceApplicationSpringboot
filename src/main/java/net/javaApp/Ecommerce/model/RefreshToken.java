@@ -1,14 +1,17 @@
 package net.javaApp.Ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 
-@Data
-@Entity
-@Table
+@Getter
+@Setter
+@Entity(name = "refresh_token")
+
 public class RefreshToken {
 
     @Id
@@ -16,7 +19,7 @@ public class RefreshToken {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id" )
+    @JoinColumn(name = "user_id" , referencedColumnName = "id")
     private User user;
 
     @Column(nullable = false, unique = true)

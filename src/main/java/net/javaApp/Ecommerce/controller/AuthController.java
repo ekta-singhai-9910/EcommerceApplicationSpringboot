@@ -106,7 +106,7 @@ public class AuthController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()) ;
         Optional<User> user = userRepository.findByUsernameOrEmail(userDetails.getUsername(), userDetails.getUsername()) ;
         Long userId = user.get().getId();
-        refreshTokenRepository.deleteByUserObj(user.get());
+        refreshTokenRepository.deleteByUser(user.get());
         return ResponseEntity.ok(new LogOutResponseDto("Logout successful"));
    }
 

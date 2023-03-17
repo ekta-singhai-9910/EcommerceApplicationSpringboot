@@ -7,23 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, String> {
 
     Optional<RefreshToken> findByToken(String token);
 
-    Optional<RefreshToken> findByUser_id(Long userId) ;
 
+
+    @Transactional
     @Modifying
     int deleteByUser(User user);
 
-    @Transactional
-    int deleteById(Long id) ;
-    @Modifying
-    @Transactional
-    @Query("Delete From RefreshToken where User=:user")
-    int deleteByUserObj( User user) ;
 
 }
