@@ -34,7 +34,6 @@ public class Product {
 
     private Long quantity ;
 
-    @OneToMany(mappedBy = "product")
-    private Set<CartItem>cartItems ;
+
 
 }

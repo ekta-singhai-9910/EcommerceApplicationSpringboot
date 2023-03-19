@@ -1,5 +1,6 @@
 package net.javaApp.Ecommerce.service.impl;
 
+import net.javaApp.Ecommerce.exception.EcommAPIException;
 import net.javaApp.Ecommerce.exception.ResourceNotFoundException;
 import net.javaApp.Ecommerce.model.Category;
 import net.javaApp.Ecommerce.model.Product;
@@ -10,6 +11,7 @@ import net.javaApp.Ecommerce.repository.ProductRepository;
 import net.javaApp.Ecommerce.repository.UserRepository;
 import net.javaApp.Ecommerce.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +37,9 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public List<Product> getProductsByCategory(long categoryId) {
-        List<Product> products = productRepository.findByCategoryId(categoryId) ;
+    public List<Product> getProductsByCategory(long categoryId, String categoryName) {
+
+        List<Product> products = productRepository.findByCategoryId(categoryId);
         return products;
     }
 
@@ -70,6 +73,10 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public Category addCategory(String category) {
+        Category c1 =  categoryRepository.findByName(category) ;
+        if( c1 != null){
+            throw new EcommAPIException( HttpStatus.BAD_REQUEST, "Category already exists") ;
+        }
        Category newCategory = new Category();
        newCategory.setName(category);
        Category addedCategory = categoryRepository.save(newCategory) ;
