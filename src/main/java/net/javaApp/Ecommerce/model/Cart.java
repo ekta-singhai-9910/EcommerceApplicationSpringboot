@@ -18,7 +18,7 @@ public class Cart {
     Long id ;
 
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart")
     private Set<CartItem> cartItems ;
 
 

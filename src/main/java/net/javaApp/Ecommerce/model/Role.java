@@ -18,5 +18,11 @@ public class Role {
 
     private String name ;
 
+    @ManyToMany
+    Set<User>users ;
+
+    public Role(String name){
+        this.name = name ;
+    }
 
 }

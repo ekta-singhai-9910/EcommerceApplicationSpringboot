@@ -22,16 +22,19 @@ public class Product {
     private int price ;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category ;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller ;
 
 
     private Long quantity ;
+
+    @OneToMany(mappedBy = "product")
+    private Set<CartItem>cartItems ;
 
 }

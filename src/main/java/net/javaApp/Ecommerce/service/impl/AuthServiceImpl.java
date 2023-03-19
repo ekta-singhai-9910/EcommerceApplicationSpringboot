@@ -9,6 +9,7 @@ import net.javaApp.Ecommerce.repository.RoleRepository;
 import net.javaApp.Ecommerce.repository.UserRepository;
 import net.javaApp.Ecommerce.security.JwtTokenProvider;
 import net.javaApp.Ecommerce.service.AuthService;
+import net.javaApp.Ecommerce.utils.PasswordGeneratorEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,6 +40,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider ;
 
+
+
+
     @Override
     public String login(LoginDto loginDto) {
        Authentication authentication =  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -66,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User() ;
         user.setName(registerDto.getName());
         user.setEmail(registerDto.getEmail());
-        user.setPassword(registerDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setUsername(registerDto.getUsername());
 
         Set<Role> roles = new HashSet<>() ;
@@ -91,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User() ;
         user.setName(registerDto.getName());
         user.setEmail(registerDto.getEmail());
-        user.setPassword(registerDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setUsername(registerDto.getUsername());
 
         Set<Role> roles = new HashSet<>() ;

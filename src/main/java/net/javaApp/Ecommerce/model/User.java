@@ -30,17 +30,18 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password ;
 
-    @ManyToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany( fetch = FetchType.EAGER)
     @JoinTable(
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     Set<Role>roles ;
 
-    @OneToMany( mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany( mappedBy = "seller")
     private Set<Product> products ;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY,  orphanRemoval = true)
+    @OneToOne( cascade = CascadeType.ALL)
+    @JoinColumn(name = "token_id" , referencedColumnName = "id")
     private RefreshToken token ;
 
 

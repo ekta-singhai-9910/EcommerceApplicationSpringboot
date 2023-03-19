@@ -1,12 +1,14 @@
 package net.javaApp.Ecommerce.payload;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterResponseDto {
-    private String message ;
+public class CreateRoleDto {
+    String role ;
 }
