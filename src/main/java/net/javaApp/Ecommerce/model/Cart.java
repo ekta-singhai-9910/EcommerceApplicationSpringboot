@@ -3,6 +3,7 @@ package net.javaApp.Ecommerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -11,18 +12,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table
-public class Role {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id ;
 
-    private String name ;
 
-    @ManyToMany
-    Set<User>users ;
+    @OneToMany(mappedBy = "cart")
+    private Set<CartItem> cartItems ;
 
-    public Role(String name){
-        this.name = name ;
-    }
+
 
 }

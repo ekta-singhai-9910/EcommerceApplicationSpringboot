@@ -51,7 +51,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                       //  authorize.anyRequest().permitAll()
-                        authorize.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                       authorize.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                             .anyRequest().authenticated()
                 ).exceptionHandling( exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
