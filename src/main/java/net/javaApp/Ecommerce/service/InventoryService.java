@@ -2,7 +2,10 @@ package net.javaApp.Ecommerce.service;
 
 import net.javaApp.Ecommerce.model.Category;
 import net.javaApp.Ecommerce.model.Product;
+import net.javaApp.Ecommerce.payload.CategoryDTO;
+import net.javaApp.Ecommerce.payload.CategoryResponseDto;
 import net.javaApp.Ecommerce.payload.ProductDto;
+import net.javaApp.Ecommerce.payload.ProductUpdateRequestDto;
 
 import java.util.List;
 
@@ -15,6 +18,8 @@ public interface InventoryService {
 
     Category addCategory(String category) ;
 
-    ProductDto updateProductQuantity(Long quantity, Long productId) ;
+    ProductDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto) ;
+
+    void deleteProduct(Long productId) ;
 
 }

@@ -5,7 +5,10 @@ import net.javaApp.Ecommerce.exception.ResourceNotFoundException;
 import net.javaApp.Ecommerce.model.Category;
 import net.javaApp.Ecommerce.model.Product;
 import net.javaApp.Ecommerce.model.User;
+import net.javaApp.Ecommerce.payload.CategoryDTO;
+import net.javaApp.Ecommerce.payload.CategoryResponseDto;
 import net.javaApp.Ecommerce.payload.ProductDto;
+import net.javaApp.Ecommerce.payload.ProductUpdateRequestDto;
 import net.javaApp.Ecommerce.repository.CategoryRepository;
 import net.javaApp.Ecommerce.repository.ProductRepository;
 import net.javaApp.Ecommerce.repository.UserRepository;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,20 +88,47 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public ProductDto updateProductQuantity(Long quantity, Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFoundException("Product", "Id", productId) );
+    public ProductDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto) {
+        Optional<Product> product = Optional.ofNullable(productRepository.findById(productUpdateRequestDto.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", productUpdateRequestDto.getId())
+        ));
 
-        product.setQuantity(quantity);
-        Product updatedProduct = productRepository.save(product) ;
-        ProductDto updatedProductDto = new ProductDto() ;
-        updatedProductDto.setName(updatedProduct.getName());
-        updatedProductDto.setQuantity(updatedProduct.getQuantity());
-        updatedProductDto.setCategory(updatedProduct.getCategory().getName());
-        updatedProductDto.setUsernameOrEmail(updatedProduct.getSeller().getUsername());
-        updatedProductDto.setPrice(updatedProduct.getPrice());
-        return updatedProductDto ;
+        Product product1 = product.get();
+        product1.setQuantity(productUpdateRequestDto.getQuantity() == -1L ?
+                product1.getQuantity() : productUpdateRequestDto.getQuantity());
+        product1.setPrice(productUpdateRequestDto.getPrice() == -1 ?
+                product1.getPrice() : productUpdateRequestDto.getPrice());
+        product1.setName(productUpdateRequestDto.getName() == null ?
+                product1.getName() : productUpdateRequestDto.getName());
+        if( productUpdateRequestDto.getCategory() != null){
+           Category c =  categoryRepository.findByName(productUpdateRequestDto.getCategory()) ;
+           if( c == null){
+               c = new Category(productUpdateRequestDto.getCategory()) ;
+               categoryRepository.save(c) ;
+           }
+        }
 
+        product1.setCategory(productUpdateRequestDto.getCategory() == null ?
+                product1.getCategory() :
+                categoryRepository.findByName(productUpdateRequestDto.getCategory()));
+
+        Product updatedProduct = productRepository.save(product1) ;
+        ProductDto updatedProductDto = new ProductDto(
+                updatedProduct.getId(),
+                updatedProduct.getName(),
+                updatedProduct.getPrice(),
+                updatedProduct.getSeller().getUsername(),
+                updatedProduct.getCategory().getName(),
+                updatedProduct.getQuantity()
+        ) ;
+       return updatedProductDto;
+
+    }
+
+    @Transactional
+    @Override
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
     }
 
 

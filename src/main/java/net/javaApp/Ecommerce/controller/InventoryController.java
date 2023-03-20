@@ -5,10 +5,7 @@ import net.javaApp.Ecommerce.exception.EcommAPIException;
 import net.javaApp.Ecommerce.exception.ResourceNotFoundException;
 import net.javaApp.Ecommerce.model.Category;
 import net.javaApp.Ecommerce.model.Product;
-import net.javaApp.Ecommerce.payload.CategoryDTO;
-import net.javaApp.Ecommerce.payload.CategoryResponseDto;
-import net.javaApp.Ecommerce.payload.ProductDto;
-import net.javaApp.Ecommerce.payload.ProductUpdateDto;
+import net.javaApp.Ecommerce.payload.*;
 import net.javaApp.Ecommerce.repository.CategoryRepository;
 import net.javaApp.Ecommerce.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +83,28 @@ public class InventoryController {
         return new ResponseEntity<>(products, HttpStatus.OK)  ;
     }
 
+    //update product based on input parameters
+    @PutMapping("/product")
+    public ResponseEntity<?> updateProduct(@RequestBody ProductUpdateRequestDto productUpdateRequestDto){
+        log.info("Updating product info based on the input parameter received" , productUpdateRequestDto) ;
+        ProductDto updatedProductDto = new ProductDto();
+        try {
+            updatedProductDto = inventoryService.updateProduct(productUpdateRequestDto);
+        }
+        catch(Exception ex){
+            throw new EcommAPIException( HttpStatus.BAD_REQUEST, "Input paramters not valid" ) ;
+        }
+        return new ResponseEntity<>(updatedProductDto, HttpStatus.CREATED) ;
+    }
 
+    //delete product by id
+    @DeleteMapping("/product")
+    public ResponseEntity<?> deleteProduct(
+            @RequestParam(value = "productId", required = true) Long productId){
+        inventoryService.deleteProduct(productId);
+        return new ResponseEntity<>(new GenericResponseDto("Prodduct deleted successfully"), HttpStatus.ACCEPTED) ;
+    }
 
 
 }
+
