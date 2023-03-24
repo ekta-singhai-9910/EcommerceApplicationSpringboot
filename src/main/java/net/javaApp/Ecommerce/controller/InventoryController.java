@@ -1,5 +1,9 @@
 package net.javaApp.Ecommerce.controller;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import net.javaApp.Ecommerce.exception.EcommAPIException;
 import net.javaApp.Ecommerce.exception.ResourceNotFoundException;
@@ -8,7 +12,9 @@ import net.javaApp.Ecommerce.model.Product;
 import net.javaApp.Ecommerce.payload.*;
 import net.javaApp.Ecommerce.repository.CategoryRepository;
 import net.javaApp.Ecommerce.service.InventoryService;
+import net.javaApp.Ecommerce.service.impl.FilterSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,10 +36,10 @@ public class InventoryController {
     private CategoryRepository categoryRepository;
 
     //get all products
-    @GetMapping("/Products")
-    public ResponseEntity<?> getAllProducts(){
-        return ResponseEntity.ok(inventoryService.getAllProducts()) ;
-    }
+//    @GetMapping("/Products")
+//    public ResponseEntity<?> getAllProducts(){
+//        return ResponseEntity.ok(inventoryService.getAllProducts()) ;
+//    }
 
 
     //add product
@@ -54,34 +60,34 @@ public class InventoryController {
     }
 
     //get products by category
-    @GetMapping("/products/category")
-    public ResponseEntity<?> getProductsByCategory(
-            @RequestParam(value = "categoryId", required = false) long categoryId,
-            @RequestParam(value = "categoryName", required = false) String categoryName
-    ){
-        List<Product> products = new ArrayList<>() ;
-        if(Objects.equals(categoryId, null) && categoryName == null){
-           products = inventoryService.getAllProducts() ;
-        }
-        else if( Objects.nonNull(categoryId) && categoryName != null ){
-             Category c1 = categoryRepository.findByName(categoryName) ;
-             Optional<Category> c2 = categoryRepository.findById(categoryId) ;
-             if( c1 != c2.get()){
-                 throw new EcommAPIException(HttpStatus.BAD_REQUEST, "category Id & category name do not match") ;
-             }
-             else inventoryService.getProductsByCategory(categoryId, categoryName);
-        }
-        else if(categoryName != null){
-            Category c1 = categoryRepository.findByName(categoryName) ;
-            categoryId = c1.getId();
-        }
-        try {
-         products = inventoryService.getProductsByCategory(categoryId, categoryName);
-        }catch( Exception ex){
-            throw new ResourceNotFoundException("Products", "Category ID", categoryId) ;
-        }
-        return new ResponseEntity<>(products, HttpStatus.OK)  ;
-    }
+//    @GetMapping("/products/category")
+//    public ResponseEntity<?> getProductsByCategory(
+//            @RequestParam(value = "categoryId", required = false) long categoryId,
+//            @RequestParam(value = "categoryName", required = false) String categoryName
+//    ){
+//        List<Product> products = new ArrayList<>() ;
+//        if(Objects.equals(categoryId, null) && categoryName == null){
+//           products = inventoryService.getAllProducts() ;
+//        }
+//        else if( Objects.nonNull(categoryId) && categoryName != null ){
+//             Category c1 = categoryRepository.findByName(categoryName) ;
+//             Optional<Category> c2 = categoryRepository.findById(categoryId) ;
+//             if( c1 != c2.get()){
+//                 throw new EcommAPIException(HttpStatus.BAD_REQUEST, "category Id & category name do not match") ;
+//             }
+//             else inventoryService.getProductsByCategory(categoryId, categoryName);
+//        }
+//        else if(categoryName != null){
+//            Category c1 = categoryRepository.findByName(categoryName) ;
+//            categoryId = c1.getId();
+//        }
+//        try {
+//         products = inventoryService.getProductsByCategory(categoryId, categoryName);
+//        }catch( Exception ex){
+//            throw new ResourceNotFoundException("Products", "Category ID", categoryId) ;
+//        }
+//        return new ResponseEntity<>(products, HttpStatus.OK)  ;
+//    }
 
     //update product based on input parameters
     @PutMapping("/product")
@@ -103,6 +109,22 @@ public class InventoryController {
             @RequestParam(value = "productId", required = true) Long productId){
         inventoryService.deleteProduct(productId);
         return new ResponseEntity<>(new GenericResponseDto("Prodduct deleted successfully"), HttpStatus.ACCEPTED) ;
+    }
+
+
+//    public ResponseEntity<?> findProduct(){
+//        Specification<Product> specification = new Specification<Product>() {
+//            @Override
+//            public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+//                return null;
+//            }
+//        } ;
+//    }
+
+    @PostMapping("/ProductsSearch")
+    public ResponseEntity<?> findProduct(@RequestBody SpecRequestDto requestDto){
+       List<Product> products = inventoryService.findAllProducts(requestDto.getSearchRequestDto(), requestDto.getGlobalOperator()) ;
+       return ResponseEntity.ok(products) ;
     }
 
 

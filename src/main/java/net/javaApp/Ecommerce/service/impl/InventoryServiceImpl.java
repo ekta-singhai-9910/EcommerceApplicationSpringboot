@@ -5,15 +5,13 @@ import net.javaApp.Ecommerce.exception.ResourceNotFoundException;
 import net.javaApp.Ecommerce.model.Category;
 import net.javaApp.Ecommerce.model.Product;
 import net.javaApp.Ecommerce.model.User;
-import net.javaApp.Ecommerce.payload.CategoryDTO;
-import net.javaApp.Ecommerce.payload.CategoryResponseDto;
-import net.javaApp.Ecommerce.payload.ProductDto;
-import net.javaApp.Ecommerce.payload.ProductUpdateRequestDto;
+import net.javaApp.Ecommerce.payload.*;
 import net.javaApp.Ecommerce.repository.CategoryRepository;
 import net.javaApp.Ecommerce.repository.ProductRepository;
 import net.javaApp.Ecommerce.repository.UserRepository;
 import net.javaApp.Ecommerce.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -34,11 +32,14 @@ public class InventoryServiceImpl implements InventoryService {
     @Autowired
     private CategoryRepository categoryRepository ;
 
-    @Override
-    public List<Product> getAllProducts() {
-        List<Product> products = productRepository.findAll() ;
-        return products ;
-    }
+    @Autowired
+    private FilterSpecification<Product>  productFilterSpecification;
+
+//    @Override
+//    public List<Product> getAllProducts() {
+//        List<Product> products = productRepository.findAll() ;
+//        return products ;
+//    }
 
     @Override
     public List<Product> getProductsByCategory(long categoryId, String categoryName) {
@@ -132,4 +133,8 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
 
+    public List<Product> findAllProducts(List<SearchRequestDto> requestDto, SpecRequestDto.GlobalOperator globalOperator){
+        Specification<Product> specification = productFilterSpecification.getSearchSpecification(requestDto,  globalOperator ) ;
+        return productRepository.findAll(specification) ;
+    }
 }
