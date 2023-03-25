@@ -3,10 +3,13 @@ package net.javaApp.Ecommerce.payload;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 import net.javaApp.Ecommerce.model.User;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDto {
     private long productId ;
     @NotEmpty
