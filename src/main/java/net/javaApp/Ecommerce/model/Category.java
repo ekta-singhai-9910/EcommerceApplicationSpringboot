@@ -1,5 +1,6 @@
 package net.javaApp.Ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,12 @@ public class Category {
 
     private String name ;
 
-    @OneToMany( mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany( mappedBy = "category")
     private Set<Product>products ;
+
+
+    public Category(String name){
+        this.name = name ;
+    }
 }

@@ -1,7 +1,9 @@
 package net.javaApp.Ecommerce.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class EcommAPIException extends RuntimeException{
 
     private HttpStatus status ;

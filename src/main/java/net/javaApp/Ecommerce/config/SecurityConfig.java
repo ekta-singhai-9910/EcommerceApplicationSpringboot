@@ -21,16 +21,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
+
     private UserDetailsService userDetailsService ;
 
-    @Autowired
+
     private JwtAuthenticationEntryPoint authenticationEntryPoint ;
 
     private JwtAuthenticationFilter jwtAuthenticationFilter ;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter ;
+    public SecurityConfig(UserDetailsService userDetailsService,
+                          JwtAuthenticationEntryPoint authenticationEntryPoint,
+                          JwtAuthenticationFilter authenticationFilter){
+        this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtAuthenticationFilter = authenticationFilter;
     }
     @Bean
     private static PasswordEncoder passwordEncoder(){
@@ -46,12 +50,9 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
-                        authorize.anyRequest().permitAll()
-                        //authorize.anyRequest().authenticated()
-//                        authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                              //  .anyRequest().authenticated()
-
+                      //  authorize.anyRequest().permitAll()
+                       authorize.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                            .anyRequest().authenticated()
                 ).exceptionHandling( exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
                 ).sessionManagement( session -> session

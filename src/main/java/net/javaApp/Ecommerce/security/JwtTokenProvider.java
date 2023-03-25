@@ -3,10 +3,13 @@ package net.javaApp.Ecommerce.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import net.javaApp.Ecommerce.exception.EcommAPIException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -37,6 +40,11 @@ public class JwtTokenProvider {
 
     }
 
+    public String generateTokenFromUsername(String username) {
+        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationDate)).signWith(key())
+                .compact();
+    }
     private  Key key(){
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecretKey)
