@@ -42,6 +42,7 @@ public class InventoryController {
 //    }
 
 
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     //add product
     @PostMapping("/Product")
     public ResponseEntity<?> addProductToInventory(@RequestBody ProductDto productDto) {
@@ -49,6 +50,7 @@ public class InventoryController {
         return new ResponseEntity<>(addedProduct, HttpStatus.CREATED) ;
     }
 
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     //add category
     @PostMapping("/Category")
     public ResponseEntity<?> addCategory(@RequestBody CategoryDTO category){
@@ -59,37 +61,18 @@ public class InventoryController {
 
     }
 
-    //get products by category
-//    @GetMapping("/products/category")
-//    public ResponseEntity<?> getProductsByCategory(
-//            @RequestParam(value = "categoryId", required = false) long categoryId,
-//            @RequestParam(value = "categoryName", required = false) String categoryName
-//    ){
-//        List<Product> products = new ArrayList<>() ;
-//        if(Objects.equals(categoryId, null) && categoryName == null){
-//           products = inventoryService.getAllProducts() ;
-//        }
-//        else if( Objects.nonNull(categoryId) && categoryName != null ){
-//             Category c1 = categoryRepository.findByName(categoryName) ;
-//             Optional<Category> c2 = categoryRepository.findById(categoryId) ;
-//             if( c1 != c2.get()){
-//                 throw new EcommAPIException(HttpStatus.BAD_REQUEST, "category Id & category name do not match") ;
-//             }
-//             else inventoryService.getProductsByCategory(categoryId, categoryName);
-//        }
-//        else if(categoryName != null){
-//            Category c1 = categoryRepository.findByName(categoryName) ;
-//            categoryId = c1.getId();
-//        }
-//        try {
-//         products = inventoryService.getProductsByCategory(categoryId, categoryName);
-//        }catch( Exception ex){
-//            throw new ResourceNotFoundException("Products", "Category ID", categoryId) ;
-//        }
-//        return new ResponseEntity<>(products, HttpStatus.OK)  ;
-//    }
+   // get products by product Id
+    @GetMapping("/products/{productId}")
+    public ResponseEntity<?> getProductsByCategory(
+           @PathVariable(name = "productId") Long productId
+    ){
+        List<Product> products = new ArrayList<>() ;
+
+        return new ResponseEntity<>(products, HttpStatus.OK)  ;
+    }
 
     //update product based on input parameters
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @PutMapping("/product")
     public ResponseEntity<?> updateProduct(@RequestBody ProductUpdateRequestDto productUpdateRequestDto){
         log.info("Updating product info based on the input parameter received" , productUpdateRequestDto) ;
@@ -104,6 +87,7 @@ public class InventoryController {
     }
 
     //delete product by id
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @DeleteMapping("/product")
     public ResponseEntity<?> deleteProduct(
             @RequestParam(value = "productId", required = true) Long productId){
