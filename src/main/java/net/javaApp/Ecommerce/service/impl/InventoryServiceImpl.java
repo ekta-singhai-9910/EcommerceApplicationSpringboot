@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +44,10 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public List<Product> getProducts(long productId) {
-
-        List<Product> products = productRepository.findById(productId);
-        return products;
+        List<Product> productList = new ArrayList<>() ;
+        Product product = productRepository.findById(productId).get();
+        productList.add(product) ;
+        return productList;
     }
 
     @Override

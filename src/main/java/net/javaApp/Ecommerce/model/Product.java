@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -35,5 +36,7 @@ public class Product {
     private Long quantity ;
 
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Wishlist>wishlists ;
 
 }
