@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CartResponseDto {
     String message ;
-    List<CartItemResponseDto> cartItems ;
+    List<CartDto> cartItems ;
 }
