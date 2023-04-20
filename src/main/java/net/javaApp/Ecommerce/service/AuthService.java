@@ -10,4 +10,6 @@ public interface AuthService {
     String registerBuyer(RegisterDto registerDto) ;
 
     String registerSeller(RegisterDto registerDto) ;
+
+    public long getUserIdFromToken() ;
 }
