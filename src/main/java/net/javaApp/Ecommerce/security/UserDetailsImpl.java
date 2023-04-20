@@ -1,6 +1,10 @@
 package net.javaApp.Ecommerce.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.javaApp.Ecommerce.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +15,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class UserDetailsImpl implements UserDetails{
 
     private static final long serialVersionUID = 1L;
@@ -25,15 +33,6 @@ public class UserDetailsImpl implements UserDetails{
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
-
-    public UserDetailsImpl(Long id, String username, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
 
     public UserDetailsImpl(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;

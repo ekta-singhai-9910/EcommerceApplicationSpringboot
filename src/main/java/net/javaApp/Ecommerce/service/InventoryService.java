@@ -9,7 +9,7 @@ import java.util.List;
 public interface InventoryService {
 
  //   List<Product> getAllProducts() ;
-    List<Product> getProducts(long productId) ;
+    Product getProductById(long productId) ;
 
     ProductDto addProduct(ProductDto productDto) ;
 

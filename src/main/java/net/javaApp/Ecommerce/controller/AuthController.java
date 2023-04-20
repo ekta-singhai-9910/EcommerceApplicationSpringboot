@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import net.javaApp.Ecommerce.exception.EcommAPIException;
+import net.javaApp.Ecommerce.exception.ResourceNotFoundException;
 import net.javaApp.Ecommerce.exception.TokenRefreshException;
 import net.javaApp.Ecommerce.model.RefreshToken;
 import net.javaApp.Ecommerce.model.User;
@@ -54,10 +55,12 @@ public class AuthController {
 
     //logging user: Buyer & Seller  both
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto){
         String token = authService.login(loginDto) ;
-        Optional<User> user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(),
-                loginDto.getUsernameOrEmail()) ;
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(),
+                loginDto.getUsernameOrEmail()).orElseThrow(
+                () -> new EcommAPIException(HttpStatus.NOT_FOUND, "User not found for given username")
+        ));
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.get().getId()) ;
 
         JwtAuthResponseDTO responseDTO = new JwtAuthResponseDTO(
@@ -72,19 +75,15 @@ public class AuthController {
 
     //register buyer
     @PostMapping(value = {"/register/buyer", "/signup/buyer"})
-    public ResponseEntity<?> registerBuyer(@RequestBody RegisterDto registerDto){
-        try{
-            authService.registerBuyer(registerDto) ;
-        }catch (Exception ex){
-            throw new EcommAPIException(HttpStatus.BAD_REQUEST, "User cannot be registered") ;
-        }
+    public ResponseEntity<?> registerBuyer(@RequestBody @Valid RegisterDto registerDto){
+        authService.registerBuyer(registerDto) ;
         return new ResponseEntity<>( new RegisterResponseDto("New User registered successfully"), HttpStatus.OK) ;
     }
 
 
     //register seller
     @PostMapping(value = {"/register/seller", "/signup/seller"})
-    public ResponseEntity<?> registerSeller(@RequestBody RegisterDto registerDto){
+    public ResponseEntity<?> registerSeller(@RequestBody @Valid RegisterDto registerDto){
         try{
             authService.registerSeller(registerDto) ;
         }catch (Exception ex){

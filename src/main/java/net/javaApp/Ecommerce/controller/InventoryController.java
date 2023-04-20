@@ -63,12 +63,9 @@ public class InventoryController {
 
    // get products by product Id
     @GetMapping("/products/{productId}")
-    public ResponseEntity<?> getProductsByCategory(
-           @PathVariable(name = "productId") Long productId
-    ){
-        List<Product> products = new ArrayList<>() ;
-
-        return new ResponseEntity<>(products, HttpStatus.OK)  ;
+    public ResponseEntity<?> getProductsByCategory(@PathVariable(name = "productId") Long productId){
+        Product product = inventoryService.getProductById(productId) ;
+        return new ResponseEntity<>(product, HttpStatus.OK)  ;
     }
 
     //update product based on input parameters
@@ -77,12 +74,8 @@ public class InventoryController {
     public ResponseEntity<?> updateProduct(@RequestBody ProductUpdateRequestDto productUpdateRequestDto){
         log.info("Updating product info based on the input parameter received" , productUpdateRequestDto) ;
         ProductDto updatedProductDto = new ProductDto();
-        try {
-            updatedProductDto = inventoryService.updateProduct(productUpdateRequestDto);
-        }
-        catch(Exception ex){
-            throw new EcommAPIException( HttpStatus.BAD_REQUEST, "Input paramters not valid" ) ;
-        }
+        updatedProductDto = inventoryService.updateProduct(productUpdateRequestDto);
+
         return new ResponseEntity<>(updatedProductDto, HttpStatus.CREATED) ;
     }
 
@@ -105,7 +98,7 @@ public class InventoryController {
 //        } ;
 //    }
 
-    @PostMapping("/ProductsSearch")
+    @PostMapping("/productsSearch")
     public ResponseEntity<?> findProduct(@RequestBody SpecRequestDto requestDto){
        List<Product> products = inventoryService.findAllProducts(requestDto.getSearchRequestDto(), requestDto.getGlobalOperator()) ;
        return ResponseEntity.ok(products) ;

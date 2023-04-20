@@ -43,11 +43,11 @@ public class InventoryServiceImpl implements InventoryService {
 //    }
 
     @Override
-    public List<Product> getProducts(long productId) {
-        List<Product> productList = new ArrayList<>() ;
+    public Product getProductById(long productId) {
+
         Product product = productRepository.findById(productId).get();
-        productList.add(product) ;
-        return productList;
+
+        return product;
     }
 
     @Override
