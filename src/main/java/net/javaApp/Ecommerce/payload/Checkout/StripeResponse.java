@@ -1,4 +1,4 @@
-package net.javaApp.Ecommerce.payload;
+package net.javaApp.Ecommerce.payload.Checkout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenericResponseDto {
-    Boolean success ;
-    String message ;
+public class StripeResponse {
+    private String sessionId;
 }

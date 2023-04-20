@@ -6,6 +6,7 @@ import net.javaApp.Ecommerce.payload.Cart.CartDto;
 import net.javaApp.Ecommerce.payload.Cart.CartResponseDto;
 import net.javaApp.Ecommerce.payload.GenericResponseDto;
 import net.javaApp.Ecommerce.repository.UserRepository;
+import net.javaApp.Ecommerce.service.AuthService;
 import net.javaApp.Ecommerce.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,8 @@ public class CartController {
     @Autowired
     private CartService cartService ;
 
+    @Autowired
+    private AuthService authService ;
     @Autowired
     private UserDetailsService userDetailsService ;
 
@@ -76,7 +79,7 @@ public class CartController {
     @DeleteMapping("/{cartItemId}")
     ResponseEntity<?> deleteCartItemByCartItemId(@PathVariable("cartItemId") Long cartItemId){
         cartService.deleteCartItem(cartItemId);
-        return new ResponseEntity<>(new GenericResponseDto("Deleted the cart item "), HttpStatus.OK) ;
+        return new ResponseEntity<>(new GenericResponseDto(true, "Deleted the cart item "), HttpStatus.OK) ;
     }
 
 

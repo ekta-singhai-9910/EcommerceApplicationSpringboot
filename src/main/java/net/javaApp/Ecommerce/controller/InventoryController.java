@@ -92,7 +92,7 @@ public class InventoryController {
     public ResponseEntity<?> deleteProduct(
             @RequestParam(value = "productId", required = true) Long productId){
         inventoryService.deleteProduct(productId);
-        return new ResponseEntity<>(new GenericResponseDto("Prodduct deleted successfully"), HttpStatus.ACCEPTED) ;
+        return new ResponseEntity<>(new GenericResponseDto(true, "Product deleted successfully"), HttpStatus.ACCEPTED) ;
     }
 
 

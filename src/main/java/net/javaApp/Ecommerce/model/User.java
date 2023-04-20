@@ -1,5 +1,6 @@
 package net.javaApp.Ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -44,5 +46,7 @@ public class User {
     @JoinColumn(name = "token_id" , referencedColumnName = "id")
     private RefreshToken token ;
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders ;
 
 }

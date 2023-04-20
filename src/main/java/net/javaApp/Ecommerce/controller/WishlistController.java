@@ -45,7 +45,7 @@ public class WishlistController {
     public ResponseEntity<?> addToWishlist(@RequestBody WishlistRequestDto requestDto){
        Long userId = getUserIdFromToken() ;
        wishlistService.addToWishlist(requestDto, userId);
-       return new ResponseEntity<>(new GenericResponseDto("Product added to the wishlist successfully"), HttpStatus.CREATED) ;
+       return new ResponseEntity<>(new GenericResponseDto(true, "Product added to the wishlist successfully"), HttpStatus.CREATED) ;
     }
 
 
