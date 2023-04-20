@@ -11,6 +11,7 @@ import net.javaApp.Ecommerce.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,24 +31,17 @@ public class CartController {
 
     @Autowired
     private AuthService authService ;
-    @Autowired
-    private UserDetailsService userDetailsService ;
+
 
     @Autowired
     private UserRepository userRepository ;
 
-    public long getUserIdFromToken(){
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()) ;
-        Optional<User> user = userRepository.findByUsernameOrEmail(userDetails.getUsername(), userDetails.getUsername()) ;
-        long userId = user.get().getId();
-        return userId ;
-    }
 
-   // @PreAuthorize("hasRole('ROLE_USER')")
+
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @PostMapping
     ResponseEntity<?> addToCart(@Valid @RequestBody CartDto addToCartDto){
-      Long userId = getUserIdFromToken() ;
+      Long userId = authService.getUserIdFromToken() ;
       CartDto addToCartDto1 = cartService.addToCart(addToCartDto, userId) ;
       CartDto cartItemResponseDto = new CartDto(addToCartDto1.getId(), addToCartDto1.getProductId(),
                 addToCartDto1.getQuantity()) ;
@@ -57,25 +51,27 @@ public class CartController {
     }
 
 
-    //@PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @GetMapping
     ResponseEntity<?> getCartItems(){
-        Long userId = getUserIdFromToken() ;
+        Long userId = authService.getUserIdFromToken() ;
         List<CartDto> responseDtoList = cartService.getAllCartItems(userId) ;
         return new ResponseEntity<>(new CartResponseDto("List of Cart Items fetched " +
                 "successfully", responseDtoList), HttpStatus.OK) ;
 
     }
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @PutMapping
     ResponseEntity<?> updateCartItem(@RequestBody  CartDto updateCartDto){
-        Long userId = getUserIdFromToken() ;
+        Long userId = authService.getUserIdFromToken() ;
         CartDto updatedCartDto = cartService.updateCartItem(updateCartDto, userId) ;
         List<CartDto> list = new ArrayList<>() ; list.add(updatedCartDto) ;
         return new ResponseEntity<>(new CartResponseDto("Updated the cart " +
                 "item", list), HttpStatus.CREATED) ;
     }
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @DeleteMapping("/{cartItemId}")
     ResponseEntity<?> deleteCartItemByCartItemId(@PathVariable("cartItemId") Long cartItemId){
         cartService.deleteCartItem(cartItemId);

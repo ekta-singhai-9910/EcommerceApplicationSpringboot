@@ -5,6 +5,7 @@ import net.javaApp.Ecommerce.payload.GenericResponseDto;
 import net.javaApp.Ecommerce.payload.ProductDto;
 import net.javaApp.Ecommerce.payload.WishlistRequestDto;
 import net.javaApp.Ecommerce.repository.UserRepository;
+import net.javaApp.Ecommerce.service.AuthService;
 import net.javaApp.Ecommerce.service.WishlistService;
 import net.javaApp.Ecommerce.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,29 +30,21 @@ public class WishlistController {
 
 
     @Autowired
-    private UserDetailsService userDetailsService ;
+    private AuthService authService ;
 
-    @Autowired
-    private UserRepository userRepository ;
-
-    public long getUserIdFromToken(){
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()) ;
-        Optional<User> user = userRepository.findByUsernameOrEmail(userDetails.getUsername(), userDetails.getUsername()) ;
-        long userId = user.get().getId();
-        return userId ;
-    }
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @PostMapping
     public ResponseEntity<?> addToWishlist(@RequestBody WishlistRequestDto requestDto){
-       Long userId = getUserIdFromToken() ;
+       Long userId = authService.getUserIdFromToken() ;
        wishlistService.addToWishlist(requestDto, userId);
        return new ResponseEntity<>(new GenericResponseDto(true, "Product added to the wishlist successfully"), HttpStatus.CREATED) ;
     }
 
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @GetMapping
     public ResponseEntity<?>  getWishlist(){
-        Long userId = getUserIdFromToken() ;
+        Long userId = authService.getUserIdFromToken() ;
         List<ProductDto> productDtos = wishlistService.getWishlist(userId) ;
         return new ResponseEntity<>(productDtos, HttpStatus.OK) ;
     }

@@ -61,6 +61,7 @@ public class InventoryController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
    // get products by product Id
     @GetMapping("/products/{productId}")
     public ResponseEntity<?> getProductsByCategory(@PathVariable(name = "productId") Long productId){
@@ -98,6 +99,7 @@ public class InventoryController {
 //        } ;
 //    }
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @PostMapping("/productsSearch")
     public ResponseEntity<?> findProduct(@RequestBody SpecRequestDto requestDto){
        List<Product> products = inventoryService.findAllProducts(requestDto.getSearchRequestDto(), requestDto.getGlobalOperator()) ;

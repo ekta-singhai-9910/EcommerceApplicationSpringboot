@@ -8,6 +8,7 @@ import net.javaApp.Ecommerce.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService ;
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @PostMapping
     public ResponseEntity<?> placeOrder(){
         orderService.placeOrder();
@@ -30,12 +32,14 @@ public class OrderController {
                 " order has been placed successfully"), HttpStatus.CREATED) ;
     }
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @GetMapping("/allOrders")
     public ResponseEntity<?> getAllOrders(){
        List<Order> orderList = orderService.getAllOrderByUser() ;
        return new ResponseEntity<>(orderList, HttpStatus.OK) ;
     }
 
+    @PreAuthorize("hasRole('ROLE_BUYER')")
     @GetMapping("/{orderId}")
     public ResponseEntity<?> getOrderById(@PathVariable(name = "orderId") Long orderId){
        Order order = orderService.getOrderById(orderId) ;
